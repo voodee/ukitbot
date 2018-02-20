@@ -110,7 +110,7 @@ bot.dialog('activateCiHooks', session => {
     });
 
 }).triggerAction({
-    matches: /^\/activateCiHooks$/i
+    matches: /^activateCiHooks$/i
 });
 
 
