@@ -51,7 +51,7 @@ var azureTableClient = new botbuilder_azure.AzureTableClient(tableName, 'Default
 var tableStorage = new botbuilder_azure.AzureBotStorage({ gzipData: false }, azureTableClient);
 
 
-var savedAddress = [];
+// var savedAddress = [];
 // Create your bot with a function to receive messages from the user
 var bot = new builder.UniversalBot(connector, session => {
 
@@ -61,39 +61,60 @@ var bot = new builder.UniversalBot(connector, session => {
     //     session.send('Привет!')
     // }
     
-    const address = session.message.address;
-    if ( !savedAddress[address.channelId] ) {
-        // savedAddress.push(address);
+    // const address = session.message.address;
+    // if ( !savedAddress[address.channelId] ) {
+    //     // savedAddress.push(address);
 
-        var task = {
-            PartitionKey: entGen.String('addresstasks'),
-            RowKey: entGen.String(address.channelId),
-            address: JSON.stringify(address),
-        };
+    //     var task = {
+    //         PartitionKey: entGen.String('addresstasks'),
+    //         RowKey: entGen.String(address.channelId),
+    //         address: JSON.stringify(address),
+    //     };
 
-        tableSvc.retrieveEntity('address', 'addresstasks', address.channelId, function(error, result, response){
-            if(error){
-                tableSvc.insertEntity('address', task, function (error, result, response) {
-                    if(!error){
-                        session.send('Привет!');
-                    }
-                });
-            }
-        });
+    //     tableSvc.retrieveEntity('address', 'addresstasks', address.channelId, function(error, result, response){
+    //         if(error){
+    //             tableSvc.insertEntity('address', task, function (error, result, response) {
+    //                 if(!error){
+    //                     session.send('Привет!');
+    //                 }
+    //             });
+    //         }
+    //     });
 
 
-    }
+    // }
 
 });
 bot.set('storage', tableStorage);
 
-server.get('/api/hook', (req, res, next) => {
-    // savedAddress.map( address => {
-    //     var msg = new builder.Message().address(address);
-    //     msg.text(req.query.text);
-    //     bot.send(msg);
 
-    // })
+bot.dialog('activateCiHooks', session => {
+    const address = session.message.address;
+
+    var task = {
+        PartitionKey: entGen.String('addresstasks'),
+        RowKey: entGen.String(address.channelId),
+        address: JSON.stringify(address),
+    };
+
+    tableSvc.retrieveEntity('address', 'addresstasks', address.channelId, function(error, result, response){
+        if(error){
+            tableSvc.insertEntity('address', task, function (error, result, response) {
+                if(!error){
+                    session.endDialog('Поздравляем, подписка оформлена!');
+                }
+            });
+        } else {
+            session.endDialog('Подписка была оформлена ранее.');
+        }
+    });
+
+}).triggerAction({
+    matches: /^\/activateCiHooks$/i
+});
+
+
+server.get('/api/hook', (req, res, next) => {
     var query = new azure.TableQuery()
         .where('PartitionKey eq ?', 'addresstasks');
 
@@ -111,24 +132,3 @@ server.get('/api/hook', (req, res, next) => {
     res.send();
     return next();
 });
-
-// bot.dialog('/', [
-//     function (session) {
-//         console.log('sad')
-//         builder.Prompts.text(session, "Hello... What's your name?");
-//     },
-//     function (session, results) {
-//         session.userData.name = results.response;
-//         builder.Prompts.number(session, "Hi " + results.response + ", How many years have you been coding?"); 
-//     },
-//     function (session, results) {
-//         session.userData.coding = results.response;
-//         builder.Prompts.choice(session, "What language do you code Node using?", ["JavaScript", "CoffeeScript", "TypeScript"]);
-//     },
-//     function (session, results) {
-//         session.userData.language = results.response.entity;
-//         session.send("Got it... " + session.userData.name + 
-//                     " you've been programming for " + session.userData.coding + 
-//                     " years and use " + session.userData.language + ".");
-//     }
-// ]);
