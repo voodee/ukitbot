@@ -54,50 +54,20 @@ var tableStorage = new botbuilder_azure.AzureBotStorage({ gzipData: false }, azu
 // var savedAddress = [];
 // Create your bot with a function to receive messages from the user
 var bot = new builder.UniversalBot(connector, session => {
-
-    // if (!session.conversationData['hi']) {
-    //     session.conversationData['hi'] = true;
-    //     const address = session.message.address;
-    //     session.send('Привет!')
-    // }
-    
-    // const address = session.message.address;
-    // if ( !savedAddress[address.channelId] ) {
-    //     // savedAddress.push(address);
-
-    //     var task = {
-    //         PartitionKey: entGen.String('addresstasks'),
-    //         RowKey: entGen.String(address.channelId),
-    //         address: JSON.stringify(address),
-    //     };
-
-    //     tableSvc.retrieveEntity('address', 'addresstasks', address.channelId, function(error, result, response){
-    //         if(error){
-    //             tableSvc.insertEntity('address', task, function (error, result, response) {
-    //                 if(!error){
-    //                     session.send('Привет!');
-    //                 }
-    //             });
-    //         }
-    //     });
-
-
-    // }
-
+    console.log('==================================')
 });
 bot.set('storage', tableStorage);
 
 
 bot.dialog('activateCiHooks', session => {
     const address = session.message.address;
-
     var task = {
         PartitionKey: entGen.String('addresstasks'),
-        RowKey: entGen.String(address.channelId),
+        RowKey: entGen.String(address.conversation.id),
         address: JSON.stringify(address),
     };
 
-    tableSvc.retrieveEntity('address', 'addresstasks', address.channelId, function(error, result, response){
+    tableSvc.retrieveEntity('address', 'addresstasks', address.conversation.id, function(error, result, response){
         if(error){
             tableSvc.insertEntity('address', task, function (error, result, response) {
                 if(!error){
@@ -110,8 +80,28 @@ bot.dialog('activateCiHooks', session => {
     });
 
 }).triggerAction({
-    matches: /activateCiHooks$/i
+    matches: /activateCiHooks/i
 });
+
+
+bot.dialog('deploy', [
+    session => {
+        console.log('+++++++++++++++++++++++++++++++')
+        builder.Prompts.number(session, "Хост?");
+    },
+    (session, results) => {
+        console.log('results.response', results.response)
+        session.endDialog("Конец");
+    }
+]).triggerAction({
+    matches: /deploy/i
+})
+// .cancelAction('cancelDeploy', "Отменено.", { 
+//     matches: /отмена/i,
+//     confirmPrompt: "Уверены?"
+// })
+
+
 
 
 server.get('/api/hook', (req, res, next) => {
@@ -121,7 +111,6 @@ server.get('/api/hook', (req, res, next) => {
     tableSvc.queryEntities('address',query, null, function(error, result, response) {
         if(!error) {
             result.entries.map( entry => {
-                console.log('JSON.parse(entry.address._)', JSON.parse(entry.address._))
                 var msg = new builder.Message().address( JSON.parse(entry.address._) );
                 msg.text(req.query.text);
                 bot.send(msg);
