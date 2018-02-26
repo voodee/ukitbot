@@ -131,8 +131,7 @@ bot.dialog('tits', session => {
                     contentType: 'image/jpg',
                     name: 'boobs.jpg'
                 });
-
-            session.send(msg);
+            session.endDialog(msg);
         } else {
             session.endDialog(error);
         }
@@ -146,21 +145,22 @@ bot.dialog('tits', session => {
 // })
 
 
-const wikiquote = require('./lib/wikiquote/wikiquote')
 
-    wikiquote.searchPeople('Владимир Путин')
-        .then(pages => {
-            console.log('pages', pages)
-            return wikiquote.getRandomQuote(pages[0].title)
-        })
-        .then(quote => console.log(quote))
-        .catch(e => {
-            console.log(e)
-        })
+const request = require('request');
 
-bot.dialog('qter', session => {
+bot.dialog('rrsgdgsdsdgsdgs', session => {
+    request({
+        headers: {'content-type' : 'application/x-www-form-urlencoded'},
+        url: 'http://forismatic.com/api/1.0/',
+        method: 'POST',
+        body:    "method=getQuote&format=json&param=ms&lang=ru",
+        json: true,
+    }, function(error, response, body){
+        console.log('msg',body)
+        session.endDialog(`**${body.quoteAuthor || 'Кто-то'}** как-то сказал:\n\n${body.quoteText}`);
+    });
 }).triggerAction({
-    matches: /цитатаqt/i
+    matches: /цитата/i
 })
 
 
