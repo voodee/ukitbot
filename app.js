@@ -96,11 +96,72 @@ bot.dialog('deploy', [
 ]).triggerAction({
     matches: /deploy/i
 })
+
+
+var gis = require('g-i-s');
+
+
+bot.dialog('zopa', session => {
+    gis('women ass erotic wallpaper jpg', (error, results) => {
+        if (!error && results.length) {
+            const img = results[ Math.floor(Math.random() * results.length) ]
+            const msg = new builder.Message(session)
+                .addAttachment({
+                    contentUrl: img.url,
+                    contentType: 'image/jpg',
+                    name: 'ass.jpg'
+                });
+
+            session.send(msg);
+        } else {
+            session.endDialog(error);
+        }
+    })
+}).triggerAction({
+    matches: /жопа|попа|ass/i
+})
+
+bot.dialog('tits', session => {
+    gis('women tits erotic wallpaper jpg', (error, results) => {
+        if (!error && results.length) {
+            const img = results[ Math.floor(Math.random() * results.length) ]
+            const msg = new builder.Message(session)
+                .addAttachment({
+                    contentUrl: img.url,
+                    contentType: 'image/jpg',
+                    name: 'boobs.jpg'
+                });
+
+            session.send(msg);
+        } else {
+            session.endDialog(error);
+        }
+    })
+}).triggerAction({
+    matches: /сиськи|грудь|boobs|tits|knocker/i
+})
 // .cancelAction('cancelDeploy', "Отменено.", { 
 //     matches: /отмена/i,
 //     confirmPrompt: "Уверены?"
 // })
 
+
+const wikiquote = require('./lib/wikiquote/wikiquote')
+
+    wikiquote.searchPeople('Владимир Путин')
+        .then(pages => {
+            console.log('pages', pages)
+            return wikiquote.getRandomQuote(pages[0].title)
+        })
+        .then(quote => console.log(quote))
+        .catch(e => {
+            console.log(e)
+        })
+
+bot.dialog('qter', session => {
+}).triggerAction({
+    matches: /цитатаqt/i
+})
 
 
 
