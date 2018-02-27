@@ -112,7 +112,7 @@ bot.dialog('zopa', session => {
                     name: 'ass.jpg'
                 });
 
-            session.send(msg);
+            session.endDialog(msg);
         } else {
             session.endDialog(error);
         }
