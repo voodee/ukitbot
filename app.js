@@ -53,9 +53,7 @@ var tableStorage = new botbuilder_azure.AzureBotStorage({ gzipData: false }, azu
 
 // var savedAddress = [];
 // Create your bot with a function to receive messages from the user
-var bot = new builder.UniversalBot(connector, session => {
-    console.log('==================================')
-});
+var bot = new builder.UniversalBot(connector);
 bot.set('storage', tableStorage);
 
 
@@ -174,7 +172,7 @@ server.get('/api/hook', (req, res, next) => {
             result.entries.map( entry => {
                 var msg = new builder.Message().address( JSON.parse(entry.address._) );
                 msg.text(req.query.text);
-                bot.send(msg);
+                bot.endDialog(msg);
             })
         }
     });
