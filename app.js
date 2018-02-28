@@ -118,17 +118,23 @@ var gis = require('g-i-s');
 bot.dialog('ass', session => {
     gis('women ass erotic wallpaper jpg', (error, results) => {
         if (!error && results.length) {
-            const img = results[ Math.floor(Math.random() * results.length) ]
-            const msg = new builder.Message(session)
-                .addAttachment({
-                    contentUrl: img.url,
-                    contentType: 'image/jpg',
-                    name: 'ass.jpg'
-                });
-
-            session.endDialog(msg);
+            try {
+                const img = results[ Math.floor(Math.random() * results.length) ]
+                const msg = new builder.Message(session)
+                    .addAttachment({
+                        contentUrl: img.url,
+                        contentType: 'image/jpg',
+                        name: 'ass.jpg'
+                    });
+    
+                session.endDialog(msg);
+            } catch (e) {
+                session.send('Что-то пошло не так(');
+                session.endDialog(e);
+            }
         } else {
-            session.endDialog('Что-то пошло не так(');
+            session.send('Что-то пошло не так(');
+            session.endDialog(error);
         }
     })
 }).triggerAction({
