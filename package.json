@@ -9,11 +9,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.18.0",
     "azure-storage": "^2.8.0",
     "botbuilder": "^3.13.1",
     "botbuilder-azure": "^3.0.4",
     "cheerio": "^1.0.0-rc.2",
     "g-i-s": "^2.1.1",
+    "numeral": "^2.0.6",
     "restify": "^5.0.0",
     "superagent": "^3.8.2"
   },
