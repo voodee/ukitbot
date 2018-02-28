@@ -128,7 +128,7 @@ bot.dialog('ass', session => {
 
             session.endDialog(msg);
         } else {
-            session.endDialog(error);
+            session.endDialog('Что-то пошло не так(');
         }
     })
 }).triggerAction({
@@ -147,7 +147,7 @@ bot.dialog('tits', session => {
                 });
             session.endDialog(msg);
         } else {
-            session.endDialog(error);
+            session.endDialog('Что-то пошло не так(');
         }
     })
 }).triggerAction({
