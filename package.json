@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
-  "engines":{"node":"0.8.x || 0.9.x"},
+  "engines": {
+    "node": "0.8.x || 0.9.x"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

@@ -210,16 +210,19 @@ const axios = require('axios');
 const numeral = require('numeral');
 
 const getTokens = async () => {
-    const { data } = await axios.get('https://token.ukit.com', {
-        headers: {
-            Cookie: "_ym_uid=1511550839989041042; _ceg.s=p08xly; _ceg.u=p08xly; _ga=GA1.2.729670054.1511550839; _gid=GA1.2.1760284050.1519845798; _ym_isad=1; _ym_visorc_47254833=w; _ym_visorc_46403016=w; firstReferrer=https%3A%2F%2Fico.ukit.com%2Fru; lastReferrer=https%3A%2F%2Fico.ukit.com%2Fru; ipp_uid2=Z63g6GEcmcsTSgiH/bNy1PTqxQFFzpD3nPn2IkA==; ipp_uid1=1519845801551; rerf=AAAAAFqXAaodWLHmA1g7Ag==; _ga=GA1.3.729670054.1511550839; _gid=GA1.3.1760284050.1519845798; mf_user=0de8d55eae1dade616fe8c55ba48a7ab|; sID=eyJzZXNzaW9uSWQiOiI1YTk3MDFjMDQwYzQzZjM4YmQzODczMmQiLCJlbWFpbCI6ImVlZG9vdkBnbWFpbC5jb20ifQ; sID.sig=rB8x94aISkVynabzjPT_KHZe3JA; csrfToken=046e5e18a25bcd1d4ccf823dd9a75b37e3c7b496a3fd14fa836defa8c0f2ab5c; _uetsid=_uet24fee3a0; mf_13b8fd66-a333-46f1-bdc4-554dcc08ef14=5c2f072f7f7fc0801a11d313d3553395|022827709496e0f608bfbe2d7d0ef378ada47bfa|1519845961714||2|||0|14.27"
-        }
-    })
+    // const { data } = await axios.get('https://token.ukit.com', {
+    //     headers: {
+    //         Cookie: "_ym_uid=1511550839989041042; _ceg.s=p08xly; _ceg.u=p08xly; _ga=GA1.2.729670054.1511550839; _gid=GA1.2.1760284050.1519845798; _ym_isad=1; _ym_visorc_47254833=w; _ym_visorc_46403016=w; firstReferrer=https%3A%2F%2Fico.ukit.com%2Fru; lastReferrer=https%3A%2F%2Fico.ukit.com%2Fru; ipp_uid2=Z63g6GEcmcsTSgiH/bNy1PTqxQFFzpD3nPn2IkA==; ipp_uid1=1519845801551; rerf=AAAAAFqXAaodWLHmA1g7Ag==; _ga=GA1.3.729670054.1511550839; _gid=GA1.3.1760284050.1519845798; mf_user=0de8d55eae1dade616fe8c55ba48a7ab|; sID=eyJzZXNzaW9uSWQiOiI1YTk3MDFjMDQwYzQzZjM4YmQzODczMmQiLCJlbWFpbCI6ImVlZG9vdkBnbWFpbC5jb20ifQ; sID.sig=rB8x94aISkVynabzjPT_KHZe3JA; csrfToken=046e5e18a25bcd1d4ccf823dd9a75b37e3c7b496a3fd14fa836defa8c0f2ab5c; _uetsid=_uet24fee3a0; mf_13b8fd66-a333-46f1-bdc4-554dcc08ef14=5c2f072f7f7fc0801a11d313d3553395|022827709496e0f608bfbe2d7d0ef378ada47bfa|1519845961714||2|||0|14.27"
+    //     }
+    // })
+    const { data } = await axios.get('https://token.ukit.com/static/api/statistics.json')
     const
         all = 550000000,
-        rest = ~~/remainingTokensByPhase":"(\d+)"/.exec(data)[1],
-        sales = all - rest,
+        // rest = ~~/remainingTokensByPhase":"(\d+)"/.exec(data.soldAndRemainingTokens.soldTokens)[1],
+        sales = ~~data.soldAndRemainingTokens.soldTokens,
+        rest = all - sales,
         salesPercent = (100/all)*sales
+
 
     return {all, rest, sales, salesPercent}
 }
@@ -299,3 +302,5 @@ bot.dialog('deSubscribeToken', session => {
         })
     }, 15*1000)
 })()
+
+
