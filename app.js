@@ -288,6 +288,9 @@ bot.dialog('deSubscribeToken', session => {
         const tokenCountDiff = tokenCountNew - tokenCount
         if (tokenCountDiff < 1) return
         tokenCount = tokenCountNew
+
+        const bitcoin = tokenCountDiff * 0.0000018
+        const dollar = bitcoin * 10500
         const query = new azure.TableQuery()
             .top(5)
             .where('PartitionKey eq ?', 'subscribeTokenTasks');
@@ -296,7 +299,7 @@ bot.dialog('deSubscribeToken', session => {
             if (!error) {
                 result.entries.map(entry => {
                     const msg = new builder.Message().address(JSON.parse(entry.address._))
-                    msg.text(`Только что продали ${numeral(tokenCountDiff).format('0,0')} токенов`)
+                    msg.text(`Только что продали ${numeral(tokenCountDiff).format('0,0')} токенов\n\nПримерно за ${bitcoin} биткоинов или ${dollar} долларов`)
                     bot.send(msg)
                 })
             }
