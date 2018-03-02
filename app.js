@@ -249,7 +249,7 @@ bot.dialog('subscribeToken', session => {
         if (error) {
             tableSvc.insertEntity('address', task, (error, result, response) => {
                 if (!error) {
-                    session.endDialog('Теперь вы будете получать уведомления о продаже токенов!')
+                    session.endDialog('Теперь вы будете получать уведомления о продаже токенов!\n\n Что-бы отписаться введите **deSubscribeToken**')
                 } else {
                     session.endDialog('что-то пошло не так(')
                 }
@@ -304,3 +304,35 @@ bot.dialog('deSubscribeToken', session => {
 })()
 
 
+
+
+
+bot.dialog('msgOT', [
+    session => {
+        builder.Prompts.text(session, "Что вы хотите написать?");
+    },
+    (session, results) => {
+        request.post(
+            {
+                url: 'https://api.telegram.org/bot260673871:AAEgfDR551B58MWz1MyNBPaAUY5dosLoC-c/sendMessage',
+                formData: {
+                    chat_id: '-1001052075309',
+                    text: `@petrgrishin ${results.response} #свободаслова`,
+                }
+            },
+            () => session.endDialog("Ваще сообщение успешно отправлено!")
+        )
+    }
+]).triggerAction({
+    matches: /msgOT|пет/i
+})
+
+bot.dialog('help', session => {
+    session.endDialog(`
+        Список доступных команд:\n\n
+        **subscribeToken** — уведомления о продаже токенов
+        **msgOT** — анонимное письмо
+    `);
+}).triggerAction({
+    matches: /help|помощь/i
+})
