@@ -100,12 +100,13 @@ bot.dialog('activateCiHooks', session => {
 
 bot.dialog('deploy', [
     session => {
-        console.log('+++++++++++++++++++++++++++++++')
-        builder.Prompts.number(session, "Хост?");
+        builder.Prompts.number(session, "На какой хост? (ulightN)");
+    },
+    session => {
+        builder.Prompts.text(session, "Какую ветку?");
     },
     (session, results) => {
-        console.log('results.response', results.response)
-        session.endDialog("Конец");
+        session.endDialog("Функционал деплоя временно не реализован.");
     }
 ]).triggerAction({
     matches: /deploy/i
@@ -317,6 +318,7 @@ bot.dialog('msgOT', [
                 url: 'https://api.telegram.org/bot260673871:AAEgfDR551B58MWz1MyNBPaAUY5dosLoC-c/sendMessage',
                 formData: {
                     chat_id: '-1001052075309',
+                    parse_mode: 'markdown',
                     text: `@petrgrishin ${results.response} #свободаслова`,
                 }
             },
@@ -325,13 +327,13 @@ bot.dialog('msgOT', [
     }
 ]).triggerAction({
     matches: /msgOT|пет/i
+}).cancelAction('cancelMMsgOT', "Отменено.", { 
+    matches: /отмена|cancel/i,
+    confirmPrompt: "Уверены?"
 })
 
 bot.dialog('help', session => {
-    session.endDialog(`
-        Список доступных команд:\n\n
-        **subscribeToken** — уведомления о продаже токенов
-        **msgOT** — анонимное письмо
+    session.endDialog(`Список доступных команд:\n\n**deploy** — deploy ветки на выбранный хост\n\n**subscribeToken** — уведомления о продаже токенов\n\n**msgOT** — анонимное письмо
     `);
 }).triggerAction({
     matches: /help|помощь/i
