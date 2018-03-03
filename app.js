@@ -299,7 +299,7 @@ bot.dialog('deSubscribeToken', session => {
             if (!error) {
                 result.entries.map(entry => {
                     const msg = new builder.Message().address(JSON.parse(entry.address._))
-                    msg.text(`Только что продали ${numeral(tokenCountDiff).format('0,0')} токенов\n\nПримерно за ${bitcoin} биткоинов или ${dollar} долларов`)
+                    msg.text(`Только что продали ${numeral(tokenCountDiff).format('0,0')} токенов\n\nПримерно за ${numeral(dollar).format('$0,0.00')}`)
                     bot.send(msg)
                 })
             }
